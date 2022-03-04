@@ -8,11 +8,20 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
+@Table(name ="point_event")
 @Entity
-public class Points extends BaseEntity {
+public class EventEntity extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;
 
+    private String owner;
+
+    private String type;
+
     private Long point;
+
+    private String date;
+
+    private String expireDate;
 }
