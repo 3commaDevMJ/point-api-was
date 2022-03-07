@@ -25,6 +25,15 @@ public class PointRequest {
     private Long earnId;
     private Long eventId;
 
+    @Builder
+    public PointRequest (Long owner, int point, String type, String date, String expireDate){
+        this.owner = owner;
+        this.point = point;
+        this.type = type;
+        this.date = date;
+        this.expireDate = expireDate;
+    }
+
     public EventEntity toEventEntity(){
         return EventEntity.builder()
                 .owner(owner)
@@ -37,6 +46,7 @@ public class PointRequest {
 
     public DetailEntity toDetailEntity(){
         return DetailEntity.builder()
+                .owner(owner)
                 .eventId(eventId)
                 .earnId(earnId)
                 .point(point)

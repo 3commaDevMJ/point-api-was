@@ -52,8 +52,11 @@ public class PointControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
+        //첫번째값이 내가 원하는 값인지
         List<EventEntity> all = eventRepository.findAll();
         assertThat(all.get(0).getType()).isEqualTo(type);
+        assertThat(all.get(0).getOwner()).isEqualTo(owner);
+        assertThat(all.get(0).getPoint()).isEqualTo(point);
     }
 
 }

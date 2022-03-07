@@ -6,6 +6,7 @@ import musinsa.api.point.entity.EventEntity;
 import musinsa.api.point.repository.DetailRepository;
 import musinsa.api.point.repository.EventRepository;
 import musinsa.api.point.request.PointRequest;
+import musinsa.api.point.response.DetailGroupByResponse;
 import musinsa.common.config.PointEnum;
 import org.springframework.stereotype.Service;
 
@@ -37,18 +38,27 @@ public class PointService {
     }
 
     public void saveDetail(PointRequest pointRequest){
-
         //포인트 차감이라면 유효기간에 맞게 먼저 적립된 순서대로 사용되어야함.
-        if(!pointRequest.getType().equals(PointEnum.INCREASE.getValue())){
+        if(pointRequest.getType().equals(PointEnum.INCREASE.getValue())){
+            Long id = detailRepository.save(pointRequest.toDetailEntity()).getId();
+            detailRepository.updateEarnId(id);
+        }else {
             int point = pointRequest.getPoint();
             long owner = pointRequest.getOwner();
-
-            detailRepository.findGroupByEarnId(owner);
-
+            List<DetailGroupByResponse> detailList = detailRepository.findGroupByEarnId(owner);
+            for(DetailGroupByResponse detail: detailList){
+                int remainPoint = detail.getPoint();
+                // 해당 항목의 포인트가 빼야할것보다 크다면
+                if(remainPoint >= Math.abs(point)){
+                    remainPoint = detail.getPoint() - Math.abs(point);
+                    pointRequest.setEarnId(detail.getEarnId());
+                    detailRepository.save(pointRequest.toDetailEntity());
+                    if(remainPoint == 0) break;
+                }
+            }
         }
-        DetailEntity detailEntity = pointRequest.toDetailEntity();
-        Long id = detailRepository.save(detailEntity).getId();
-        detailRepository.updateEarnId(id);
+
+
 
     }
 }
