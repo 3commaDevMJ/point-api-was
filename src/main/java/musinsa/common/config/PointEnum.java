@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 public enum PointEnum {
 
     INCREASE("increase","적립"),
-    DEDUCT("deduct","사용"),
+    DECREASE("decrease","사용"),
     EXPIRE("expire","사용");
 
     String type;
