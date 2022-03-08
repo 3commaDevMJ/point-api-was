@@ -24,5 +24,4 @@ public enum PointEnum {
         return this.text;
     }
 
-    ;
 }

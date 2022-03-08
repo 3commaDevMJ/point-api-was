@@ -8,7 +8,8 @@ public enum StatusEnum {
     NOT_FOUND(404, "NOT_FOUND"),
     NO_USER(405, "NO_USER"),
     NO_POINT(406, "NO_POINT"),
-    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR");
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR"),
+    VALID_ERROR(407,"VALID_ERROR");
 
     int statusCode;
     String code;

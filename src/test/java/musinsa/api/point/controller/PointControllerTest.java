@@ -3,12 +3,15 @@ package musinsa.api.point.controller;
 import musinsa.api.point.entity.EventEntity;
 import musinsa.api.point.repository.EventRepository;
 import musinsa.api.point.request.PointRequest;
+import musinsa.api.point.response.PointResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,6 +33,34 @@ public class PointControllerTest {
     @AfterEach
     public void down() throws Exception{
         eventRepository.deleteAll();
+    }
+
+    public void insertData() throws Exception{
+        long owner = 1;
+        String type = "increase";
+        int point = 100;
+
+        PointRequest pointRequest = PointRequest.builder()
+                .point(point)
+                .owner(owner)
+                .type(type)
+                .build();
+
+        String url = "http://localhost:" +port + "/api/v1/point";
+
+        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url,pointRequest,Long.class);
+    }
+
+    @Test
+    public void 내역조회테스트() throws Exception{
+        for(int i =0; i<10; i++){
+            insertData();
+        }
+        Pageable pageable = PageRequest.of(0, 3);
+        List<EventEntity> points = eventRepository.findAllByOwner(1L, pageable);
+        points.forEach(eventEntity ->
+                System.out.println(eventEntity.toString())
+        );
     }
 
     @Test
@@ -57,6 +88,11 @@ public class PointControllerTest {
         assertThat(all.get(0).getType()).isEqualTo(type);
         assertThat(all.get(0).getOwner()).isEqualTo(owner);
         assertThat(all.get(0).getPoint()).isEqualTo(point);
+
+        //삭제까지 이뤄지는지...
+        System.out.printf(responseEntity.getBody()+"\n");
+        url = "http://localhost:" +port + "/api/v1/point/"+responseEntity.getBody();
+       testRestTemplate.delete(url);
     }
 
 }

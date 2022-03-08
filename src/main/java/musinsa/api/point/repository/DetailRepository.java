@@ -14,11 +14,11 @@ import java.util.List;
 @Repository
 public interface DetailRepository extends JpaRepository<DetailEntity, Long> {
     List<DetailEntity> findAllByEventId(Long eventId);
-
+    void deleteByEventId(Long eventId);
     @Modifying
     @Query(value = "update POINT_DETAIL set EARN_ID = :id where id = :id", nativeQuery = true)
-    public void updateEarnId(@Param(value = "id") Long id);
+    void updateEarnId(@Param(value = "id") Long id);
 
-    @Query(value = "select EARN_ID as earnId, sum(POINT)as point FROM POINT_DETAIL where owner = :owner group by EARN_ID", nativeQuery = true)
-    public List<DetailGroupByResponse> findGroupByEarnId(Long owner);
+    @Query(value = "select EARN_ID as earnId, sum(POINT)as point FROM POINT_DETAIL where owner = :owner group by EARN_ID  HAVING sum(point) >0", nativeQuery = true)
+    List<DetailGroupByResponse> findGroupByEarnId(Long owner);
 }

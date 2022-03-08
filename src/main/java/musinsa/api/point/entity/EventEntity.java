@@ -3,10 +3,13 @@ package musinsa.api.point.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import musinsa.common.config.BaseEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
+@ToString
 @Getter
 @NoArgsConstructor
 @Table(name = "point_event")
@@ -31,10 +34,11 @@ public class EventEntity extends BaseEntity {
 
     private String date;
 
-    private String expireDate;
+    private LocalDateTime expireDate;
 
     @Builder
-    public EventEntity(Long owner, String type, int point, String date, String expireDate) {
+    public EventEntity(Long id,Long owner, String type, int point, String date, LocalDateTime expireDate) {
+        this.id = id;
         this.owner = owner;
         this.type = type;
         this.point = point;
